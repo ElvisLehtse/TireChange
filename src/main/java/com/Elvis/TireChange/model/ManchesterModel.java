@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 public class ManchesterModel {
 
-    boolean availability;
     int id;
     String time;
+    boolean available;
 
 }

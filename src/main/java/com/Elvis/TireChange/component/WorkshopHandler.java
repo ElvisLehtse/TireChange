@@ -32,7 +32,7 @@ public class WorkshopHandler {
     }
 
     //API data as XML
-    public List<LondonModel> getLondonWorkshopData() throws JAXBException{
+    public List<LondonModel> getLondonWorkshopData() throws JAXBException {
         String url = "http://localhost:9003/api/v1/tire-change-times/available?from=2006-01-02&until=2030-01-02";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
@@ -44,6 +44,5 @@ public class WorkshopHandler {
         Unmarshaller unmarshaller = context.createUnmarshaller();
         StringReader reader = new StringReader(xmlString);
         return ((LondonTireChangeTimesResponse) unmarshaller.unmarshal(reader)).getLondonModel();
-
     }
 }
