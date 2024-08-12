@@ -10,6 +10,10 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * WorkshopController class handles user GET, POST and PUT requests by sending user data
+ * to other classes and returning a response message.
+ */
 @RestController
 public class WorkshopController {
 
@@ -32,7 +36,7 @@ public class WorkshopController {
     public RequestReplyModel bookManchester(@RequestBody UserPostRequestForManchester userData) {
         try {
             return workshopHandler.postManchesterWorkshopData(userData);
-        } catch (NullPointerException e) {
+        } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return null;
         }

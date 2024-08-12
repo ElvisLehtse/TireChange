@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
+/**
+ * This class is responsible for filtering the workshop API available times based on user preference.
+ */
 @Service
 public class ListFilter {
 
@@ -18,6 +21,10 @@ public class ListFilter {
     @Autowired
     Reader reader;
 
+    /**
+     * Sets the calendar's date to the current date and time, and then
+     * resets the time to 00:00:00.
+     */
     private Date getDate (int DateModifier) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -28,6 +35,11 @@ public class ListFilter {
         calendar.add(Calendar.DATE, DateModifier);
         return calendar.getTime();
     }
+
+    /**
+     * Receives both the London and Manchester workshop data and writes both of them
+     * into a full model List for filtering.
+     */
 
     private List<FullModel> getFullList() throws JAXBException, RuntimeException, IOException {
         List<WorkshopModel> workshopList = reader.readWorkshopConfiguration();
@@ -48,6 +60,9 @@ public class ListFilter {
         return fullModel;
     }
 
+    /**
+     * Filters the full list with the specified user preferences and returns the filtered list.
+     */
     public List<FullModel> getFilteredList (UserGetRequestData userData) throws JAXBException, RuntimeException, IOException {
         Date startDate = getDate(userData.getStartDateModifier());
         Date endDate = getDate(userData.getEndDateModifier() + 1);

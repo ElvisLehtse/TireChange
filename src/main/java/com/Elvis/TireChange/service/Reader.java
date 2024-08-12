@@ -9,6 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * This class reads the configuration file where workshop data is stored.
+ */
 @Service
 public class Reader {
 
