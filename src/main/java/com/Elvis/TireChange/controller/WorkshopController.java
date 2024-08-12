@@ -29,12 +29,23 @@ public class WorkshopController {
     }
 
     @PostMapping("postManchester")
-    public PostRequestReplyModel bookManchester(@RequestBody UserPostRequestForManchester userData) {
-        return workshopHandler.postManchesterWorkshopData(userData);
+    public RequestReplyModel bookManchester(@RequestBody UserPostRequestForManchester userData) {
+        try {
+            return workshopHandler.postManchesterWorkshopData(userData);
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     @PutMapping("putLondon")
-    public PostRequestReplyModel bookLondon(@RequestBody UserPutRequestForLondon userData) {
-        return workshopHandler.putLondonWorkshopData(userData);
+    public RequestReplyModel bookLondon(@RequestBody UserPutRequestForLondon userData) {
+        try {
+            return workshopHandler.putLondonWorkshopData(userData);
+        } catch (JAXBException | NullPointerException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
 }

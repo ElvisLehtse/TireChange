@@ -13,6 +13,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class WorkshopHandler {
@@ -46,21 +47,21 @@ public class WorkshopHandler {
     }
 
     //POST API data as JSON
-    public PostRequestReplyModel postManchesterWorkshopData(UserPostRequestForManchester userData) {
+    public RequestReplyModel postManchesterWorkshopData(UserPostRequestForManchester userData) {
         String url = STR."http://localhost:9004/api/v2/tire-change-times/\{userData.getId()}/booking";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String requestBody = STR."{\"contactInformation\": \"\{userData.getContactInformation()}\"}";
         try {
             ResponseEntity<ManchesterModel> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), ManchesterModel.class);
-            return new PostRequestReplyModel(response.getBody().getTime(), true);
+            return new RequestReplyModel(Objects.requireNonNull(response.getBody()).getTime(), true);
         } catch (HttpClientErrorException e) {
-            return new PostRequestReplyModel(e.getResponseBodyAs(ManchesterBadRequest.class).getMessage(), false);
+            return new RequestReplyModel(Objects.requireNonNull(e.getResponseBodyAs(ManchesterBadRequest.class)).getMessage(), false);
         }
     }
 
     //PUT API data as XML
-    public PostRequestReplyModel putLondonWorkshopData(UserPutRequestForLondon userData) {
+    public RequestReplyModel putLondonWorkshopData(UserPutRequestForLondon userData) throws JAXBException {
         String url = STR."http://localhost:9003/api/v1/tire-change-times/\{userData.getUuid()}/booking";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
@@ -73,11 +74,9 @@ public class WorkshopHandler {
             JAXBContext context = JAXBContext.newInstance(LondonTireChangeBookingResponse.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             StringReader reader = new StringReader(xmlString);
-            return new PostRequestReplyModel(((LondonTireChangeBookingResponse) unmarshaller.unmarshal(reader)).getTime(), true);
+            return new RequestReplyModel(((LondonTireChangeBookingResponse) unmarshaller.unmarshal(reader)).getTime(), true);
         } catch (HttpClientErrorException e) {
-            return new PostRequestReplyModel(e.getResponseBodyAs(LondonBadRequest.class).getError(), false);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
+            return new RequestReplyModel(Objects.requireNonNull(e.getResponseBodyAs(LondonBadRequest.class)).getError(), false);
         }
     }
 }

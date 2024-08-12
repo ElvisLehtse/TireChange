@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PostRequestReplyModel {
+public class RequestReplyModel {
 
     String message;
     boolean success;
