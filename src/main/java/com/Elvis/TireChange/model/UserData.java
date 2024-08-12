@@ -4,16 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
 @Setter
-public class FilterModel {
+public class UserData {
 
     List<String> workshop;
     List<String> carType;
-    Date startDate;
-    Date endDate;
+    int startDateModifier;
+    int endDateModifier;
 }
