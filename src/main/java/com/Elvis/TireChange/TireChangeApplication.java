@@ -8,11 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TireChangeApplication implements CommandLineRunner {
 
 
+
 	public static void main(String[] args) {
 		SpringApplication.run(TireChangeApplication.class, args);
 	}
 
 	public void run(String... args) {
 
-    }
+	}
 }

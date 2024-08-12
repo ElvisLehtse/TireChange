@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -15,6 +16,9 @@ public class ListFilter {
     @Autowired
     WorkshopHandler workshopHandler;
 
+    @Autowired
+    Reader reader;
+
     private Date getDate (int DateModifier) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -23,27 +27,30 @@ public class ListFilter {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.add(Calendar.DATE, DateModifier);
-        System.out.println(calendar.getTime());
         return calendar.getTime();
     }
 
-    private List<FullModel> getFullList() throws JAXBException, RuntimeException {
+    private List<FullModel> getFullList() throws JAXBException, RuntimeException, IOException {
+        List<WorkshopModel> workshopList = reader.readWorkshopConfiguration();
         List<FullModel> fullModel = new ArrayList<>();
 
         List<LondonModel> listOfLondonTimes = workshopHandler.getLondonWorkshopData();
         List<ManchesterModel> listOfManchesterTimes = workshopHandler.getManchesterWorkshopData();
 
+
         for(LondonModel model : listOfLondonTimes) {
-            fullModel.add(new FullModel(model.getUuid(), "London", "1A Gunton Rd, London" , List.of("Car", "Truck"), true, ZonedDateTime.parse(model.getTime())));
+            fullModel.add(new FullModel(model.getUuid(), workshopList.getFirst().getWorkshopName(), workshopList.getFirst().getWorkshopAddress(),
+                    workshopList.getFirst().getVehicleList(), true, ZonedDateTime.parse(model.getTime())));
         }
         for (ManchesterModel model : listOfManchesterTimes) {
-            fullModel.add(new FullModel(String.valueOf(model.getId()), "Manchester", "14 Bury New Rd, Manchester", List.of("Car"), model.isAvailable(), ZonedDateTime.parse(model.getTime())));
+            fullModel.add(new FullModel(String.valueOf(model.getId()), workshopList.getLast().getWorkshopName(), workshopList.getLast().getWorkshopAddress(),
+                    workshopList.getLast().getVehicleList(), model.isAvailable(), ZonedDateTime.parse(model.getTime())));
         }
 
         return fullModel;
     }
 
-    public List<FullModel> getFilteredList (UserData userData) throws JAXBException, RuntimeException {
+    public List<FullModel> getFilteredList (UserData userData) throws JAXBException, RuntimeException, IOException {
         Date startDate = getDate(userData.getStartDateModifier());
         Date endDate = getDate(userData.getEndDateModifier() + 1);
 

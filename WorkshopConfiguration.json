@@ -1,0 +1,15 @@
+[
+  {
+    "workshopName": "London",
+    "workshopAddress": "1A Gunton Rd, London",
+    "vehicleList": ["Car", "Truck"]
+  },
+  {
+    "workshopName": "Manchester",
+    "workshopAddress": "14 Bury New Rd, Manchester",
+    "vehicleList": ["Car"]
+  }
+]
+
+  
+
