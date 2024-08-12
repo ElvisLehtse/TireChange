@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserData {
+public class UserGetRequestData {
 
     List<String> workshop;
     List<String> carType;

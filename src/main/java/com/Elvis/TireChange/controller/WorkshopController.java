@@ -1,15 +1,10 @@
 package com.Elvis.TireChange.controller;
 
 import com.Elvis.TireChange.component.WorkshopHandler;
-import com.Elvis.TireChange.model.PostRequestReplyModel;
+import com.Elvis.TireChange.model.*;
 import com.Elvis.TireChange.service.ListFilter;
-import com.Elvis.TireChange.model.FullModel;
-import com.Elvis.TireChange.model.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -24,7 +19,7 @@ public class WorkshopController {
     WorkshopHandler workshopHandler;
 
     @GetMapping("getTimes")
-    public List<FullModel> getAvailableTimes(@RequestBody UserData userData) {
+    public List<FullModel> getAvailableTimes(@RequestBody UserGetRequestData userData) {
         try {
             return modelFilter.getFilteredList(userData);
         } catch (JAXBException | RuntimeException | IOException e) {
@@ -33,8 +28,13 @@ public class WorkshopController {
         }
     }
 
-    @PostMapping("postTime")
-    public PostRequestReplyModel bookNewTime(@RequestBody int id) {
-        return workshopHandler.postManchesterWorkshopData(id);
+    @PostMapping("postManchester")
+    public PostRequestReplyModel bookManchester(@RequestBody UserPostRequestForManchester userData) {
+        return workshopHandler.postManchesterWorkshopData(userData);
+    }
+
+    @PutMapping("putLondon")
+    public PostRequestReplyModel bookLondon(@RequestBody UserPutRequestForLondon userData) {
+        return workshopHandler.putLondonWorkshopData(userData);
     }
 }

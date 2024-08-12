@@ -15,7 +15,6 @@ public class ListFilter {
 
     @Autowired
     WorkshopHandler workshopHandler;
-
     @Autowired
     Reader reader;
 
@@ -37,7 +36,6 @@ public class ListFilter {
         List<LondonModel> listOfLondonTimes = workshopHandler.getLondonWorkshopData();
         List<ManchesterModel> listOfManchesterTimes = workshopHandler.getManchesterWorkshopData();
 
-
         for(LondonModel model : listOfLondonTimes) {
             fullModel.add(new FullModel(model.getUuid(), workshopList.getFirst().getWorkshopName(), workshopList.getFirst().getWorkshopAddress(),
                     workshopList.getFirst().getVehicleList(), true, ZonedDateTime.parse(model.getTime())));
@@ -50,7 +48,7 @@ public class ListFilter {
         return fullModel;
     }
 
-    public List<FullModel> getFilteredList (UserData userData) throws JAXBException, RuntimeException, IOException {
+    public List<FullModel> getFilteredList (UserGetRequestData userData) throws JAXBException, RuntimeException, IOException {
         Date startDate = getDate(userData.getStartDateModifier());
         Date endDate = getDate(userData.getEndDateModifier() + 1);
 
