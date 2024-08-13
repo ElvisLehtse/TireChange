@@ -2,6 +2,7 @@ package com.Elvis.TireChange.component;
 
 import com.Elvis.TireChange.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -14,6 +15,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * This class handles communication between workshop APIs by sending GET, POST and PUT requests and returns
@@ -71,9 +73,9 @@ public class WorkshopHandler {
         headers.setContentType(MediaType.APPLICATION_JSON);
         String requestBody = STR."{\"contactInformation\": \"\{userData.getContactInformation()}\"}";
         try {
-            ResponseEntity<ManchesterModel> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), ManchesterModel.class);
-            if (response.getBody() == null) throw new RuntimeException();
-            return new RequestReplyModel(Objects.requireNonNull(response.getBody()).getTime(), true);
+            ResponseEntity<Optional<ManchesterModel>> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), new ParameterizedTypeReference<>() {});
+            ManchesterModel manchesterModel = response.getBody().orElse(new ManchesterModel(0, "", false));
+            return new RequestReplyModel(manchesterModel.getTime(), true);
         } catch (HttpClientErrorException e) {
             return new RequestReplyModel(Objects.requireNonNull(e.getResponseBodyAs(ManchesterBadRequest.class)).getMessage(), false);
         }
