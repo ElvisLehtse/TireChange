@@ -72,12 +72,13 @@ public class WorkshopHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String requestBody = STR."{\"contactInformation\": \"\{userData.getContactInformation()}\"}";
-        try {
-            ResponseEntity<Optional<ManchesterModel>> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), new ParameterizedTypeReference<>() {});
-            ManchesterModel manchesterModel = response.getBody().orElse(new ManchesterModel(0, "", false));
+        ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), Object.class);
+        if (response.getStatusCode().value() == 200) {
+            ManchesterModel manchesterModel = (ManchesterModel) response.getBody();
             return new RequestReplyModel(manchesterModel.getTime(), true);
-        } catch (HttpClientErrorException e) {
-            return new RequestReplyModel(Objects.requireNonNull(e.getResponseBodyAs(ManchesterBadRequest.class)).getMessage(), false);
+        } else {
+            ManchesterBadRequest manchesterBadRequest = (ManchesterBadRequest) response.getBody();
+            return new RequestReplyModel(manchesterBadRequest.getMessage(), false);
         }
     }
 

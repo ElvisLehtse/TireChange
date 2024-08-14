@@ -34,6 +34,7 @@ public class WorkshopController {
 
     @PostMapping("postManchester")
     public RequestReplyModel bookManchester(@RequestBody UserPostRequestForManchester userData) {
+        System.out.println(userData.getId());
         try {
             return workshopHandler.postManchesterWorkshopData(userData);
         } catch (RuntimeException e) {
