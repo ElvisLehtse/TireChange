@@ -2,7 +2,6 @@ package com.Elvis.TireChange.component;
 
 import com.Elvis.TireChange.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -72,13 +71,17 @@ public class WorkshopHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String requestBody = STR."{\"contactInformation\": \"\{userData.getContactInformation()}\"}";
-        ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), Object.class);
-        if (response.getStatusCode().value() == 200) {
-            ManchesterModel manchesterModel = (ManchesterModel) response.getBody();
-            return new RequestReplyModel(manchesterModel.getTime(), true);
-        } else {
-            ManchesterBadRequest manchesterBadRequest = (ManchesterBadRequest) response.getBody();
-            return new RequestReplyModel(manchesterBadRequest.getMessage(), false);
+        try {
+            ResponseEntity<ManchesterModel> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), ManchesterModel.class);
+            Optional<ManchesterModel> optionalManchesterModel = Optional.ofNullable(response.getBody());
+            ManchesterModel manchesterModel = optionalManchesterModel.orElse(new ManchesterModel(0, "Something went wrong: could not receive the correct time", false));
+            if (manchesterModel.isAvailable()) {
+                return new RequestReplyModel(manchesterModel.getTime(), true);
+            } else {
+                return new RequestReplyModel(manchesterModel.getTime(), false);
+            }
+        } catch (HttpClientErrorException e) {
+            return new RequestReplyModel(Objects.requireNonNull(e.getResponseBodyAs(ManchesterBadRequest.class)).getMessage(), false);
         }
     }
 
